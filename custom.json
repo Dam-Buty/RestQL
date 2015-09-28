@@ -1,0 +1,28 @@
+{
+  "ignoreDead": true,
+  "cached": ["categorie"],
+  "transports": {
+    "mysql": [{
+      "id": "ADMR",
+      "params": {
+        "slow": 0,
+        "persistent": true,
+        "host": "localhost",
+        "user": "test_ADMR",
+        "pass": "secret",
+        "base": "ADMR"
+      }
+    }, {
+      "id": "Progress",
+      "params": {
+        "slow": 110,
+        "persistent": false,
+        "host": "localhost",
+        "user": "test_Progress",
+        "pass": "secret",
+        "base": "Progress",
+        "isAuthorityOn": ["categorie"]
+      }
+    }]
+  }
+}

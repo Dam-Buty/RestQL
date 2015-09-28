@@ -1,0 +1,46 @@
+{
+  "ignoreDead": true,
+  "transports": {
+    "mysql": [{
+      "id": "ADMR",
+      "params": {
+        "slow": 0,
+        "persistent": true,
+        "host": "localhost",
+        "user": "test_ADMR",
+        "pass": "secret",
+        "base": "ADMR"
+      }
+    }, {
+      "id": "test_user",
+      "params": {
+        "slow": 0,
+        "persistent": true,
+        "host": "localhost",
+        "user": "xxxx",
+        "pass": "secret",
+        "base": "ADMR"
+      }
+    }, {
+      "id": "test_pass",
+      "params": {
+        "slow": 0,
+        "persistent": true,
+        "host": "localhost",
+        "user": "test_ADMR",
+        "pass": "xxxx",
+        "base": "ADMR"
+      }
+    }, {
+      "id": "test_base",
+      "params": {
+        "slow": 0,
+        "persistent": true,
+        "host": "localhost",
+        "user": "test_ADMR",
+        "pass": "secret",
+        "base": "xxxxx"
+      }
+    }]
+  }
+}

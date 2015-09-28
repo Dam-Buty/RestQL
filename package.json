@@ -1,0 +1,15 @@
+{
+  "name": "RestQL",
+  "description": "A simple RESTful API for MySQL databases",
+  "license" : "MIT",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Dam-Buty/document-revolution.git"
+  },
+  "devDependencies": {
+    "es6-promises": "^1.0.10",
+    "mysql": "^2.9.0",
+    "node-simple-router": "^0.9.4-2"
+  }
+}
