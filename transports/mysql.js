@@ -16,9 +16,9 @@ module.exports = function() {
         if (err) {
           callback("", err);
         } else {
-          callback(connection);
+          callback(connection);    // The connect function MUST return a handler
         }
-      });        // The connect function MUST return a handler
+      });
     },
 
     close: function(connection, callback) {       // It will be retrieved with each function call
