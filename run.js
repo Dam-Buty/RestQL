@@ -2,9 +2,11 @@
 
 (function() {
 http = require('http');
-drive = require("./lib/driver.js");
 serve = require("./lib/server.js");
-QLFactory = require("./lib/server.js");
+DriveFactory = require("./lib/driver.js");
+QLFactory = require("./lib/QL.js");
+ConnectionFactory = require("./lib/connection.js");
+RouterFactory = require("./lib/router.js")
 
 try {
   Router = require('node-simple-router');
@@ -16,7 +18,7 @@ try {
 
 argv = process.argv.slice(2);
 
-var QL = QLFactory(Promise, drive);
+var QL = QLFactory(Promise, DriveFactory, ConnectionFactory);
 
 Promise.all(QL.loadconfig())
 .then(function() {
@@ -24,7 +26,9 @@ Promise.all(QL.loadconfig())
   QL.getKeys()
   .then(function(){
     Promise.all(QL.cacheTables).then(function() {
-      var router = Router({
+      var router = RouterFactory(QL);
+
+      Router({
         list_dir: false
       });
 
@@ -33,13 +37,15 @@ Promise.all(QL.loadconfig())
         .then(function(rows) {
 
         }, function(err) {
-          
+
         })
       });
 
       serve(router);
     })
   })
+}, function(err) {
+  
 });
 
 }).call(this);
