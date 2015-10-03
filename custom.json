@@ -5,7 +5,7 @@
     "mysql": [{
       "id": "ADMR",
       "params": {
-        "slow": 10,
+        "fast": 10,
         "persistent": true,
         "host": "localhost",
         "user": "test_ADMR",
@@ -15,7 +15,7 @@
     }, {
       "id": "Progress",
       "params": {
-        "slow": 100,
+        "fast": 100,
         "external": true,
         "persistent": false,
         "host": "localhost",

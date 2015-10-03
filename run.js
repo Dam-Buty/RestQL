@@ -22,7 +22,12 @@ var QL = QLFactory(Promise, DriveFactory, ConnectionFactory);
 
 Promise.all(QL.loadconfig())
 .then(function() {
-  QL.init();
+  Promise.all(QL.init()).then(function() {
+
+  }, function(err) {
+
+  });
+  
   QL.getKeys()
   .then(function(){
     Promise.all(QL.cacheTables).then(function() {
@@ -45,7 +50,7 @@ Promise.all(QL.loadconfig())
     })
   })
 }, function(err) {
-  
+
 });
 
 }).call(this);

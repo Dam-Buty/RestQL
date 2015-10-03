@@ -12,13 +12,17 @@ module.exports = function() {
         database : params.base
       });
 
-      connection.connect(function(err) {
-        if (err) {
-          callback("", err);
-        } else {
-          callback(connection);    // The connect function MUST return a handler
-        }
+      var promise = new Promise(function(resolve, reject) {
+        connection.connect(function(err) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(connection);    // The connect function MUST return a handler
+          }
+        });
       });
+
+      return promise;
     },
 
     close: function(connection, callback) {       // It will be retrieved with each function call
