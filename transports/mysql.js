@@ -25,12 +25,21 @@ module.exports = function() {
       return promise;
     },
 
-    close: function(connection, callback) {       // It will be retrieved with each function call
-      connection.end();
-      callback();
+    close: function(connection) {       // It will be retrieved with each function call
+      var promise = new Promise(function(resolve, reject) {
+        connection.end(function(err) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
+          }
+        });
+      });
+
+      return promise;
     },
 
-    getKeys: function(connection, callback) {
+    getTables: function(connection) {
       var self = this;
       var keys = {};
 
