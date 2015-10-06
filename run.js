@@ -5,11 +5,11 @@ http = require('http');
 serve = require("./lib/server.js");
 DriveFactory = require("./lib/driver.js");
 QLFactory = require("./lib/QL.js");
-ConnectionFactory = require("./lib/connection.js");
 RouterFactory = require("./lib/router.js")
 
 try {
   Router = require('node-simple-router');
+  Promise = require('es6-promises');
 } catch (e) {
   console.log('Missing dependencies! You can install them with npm install.');
   process.exit(-1);
@@ -17,41 +17,26 @@ try {
 
 argv = process.argv.slice(2);
 
-var QL = QLFactory(Promise, DriveFactory, ConnectionFactory);
+var QL = QLFactory(Promise, DriveFactory);
+var configPromises = QL.loadConfig();
 
-Promise.all(QL.loadconfig())
-.then(function() {
-  Promise.all(QL.qualify()).then(function() {
+Promise.all(configPromises).then(function(configResults) {
+  var qualifyPromises = QL.qualify();
+  Promise.all(qualifyPromises).then(function(qualifyResults) {
+    var cachePromises = QL.initCache();
+    Promise.all(cachePromises).then(function(initResults) {
+      var router = RouterFactory(QL, Router);
 
-  }, function(err) {
-
-  });
-
-
-
-  QL.loadConfig()
-  .then(function(){
-    Promise.all(QL.cacheTables).then(function() {
-      var router = RouterFactory(QL);
-
-      Router({
-        list_dir: false
-      });
-
-      router.get("/:table", function(request, response) {
-        QL.selectFrom(request.params.table).send()
-        .then(function(rows) {
-
-        }, function(err) {
-
-        })
-      });
-
-      serve(router);
-    })
-  })
-}, function(err) {
-
+      console.log("Cache ready, launching server");
+      serve(http, router);
+    }).catch(function(err) {
+      console.log(err.stack);
+    });
+  }).catch(function(err) {
+    console.log(err.stack);
+  });;
+}).catch(function(err) {
+  console.log(err.stack);
 });
 
 }).call(this);

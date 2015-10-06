@@ -1,17 +1,19 @@
 mysql = require('mysql');
-Promise = require('es6-promises');
 
-module.exports = function() {
+module.exports = function(Promise) {
   return {
     id: "mysql",
 
-    connect: function(params, callback) {
+    connect: function(params) {
       var connection = mysql.createConnection({
         host     : params.host,
         user     : params.user,
         password : params.pass,
         database : params.base
       });
+
+      console.log("PARAMS DE CONNECTION");
+      console.dir(params);
 
       var promise = new Promise(function(resolve, reject) {
         connection.connect(function(err) {
@@ -44,6 +46,8 @@ module.exports = function() {
       var self = this;
       var tables = {};
 
+      console.dir(connection.query);
+
       var promise = new Promise(function(resolve, reject) {
         connection.query("SHOW TABLES;", function(err, rows, fields) {
           if (err) {
@@ -66,7 +70,7 @@ module.exports = function() {
                 } else {
                   table.key = rows[0].Column_name;
                   tables[tableName] = table;
-                  if (Object.keys(keys).length == tablesNumber) {
+                  if (Object.keys(tables).length == tablesNumber) {
                     resolve(tables);
                   }
                 }
@@ -79,10 +83,10 @@ module.exports = function() {
       return promise;
     },
 
-    select: function(connection, params, callback) {
+    select: function(connection, params) {
       var _query = ["SELECT"];
 
-      if (params.columns === "*") {
+      if (params.columns.length === 0) {
         _query.push("*");
       } else {
         _query.push(params.columns.map(function(column) { return "`" + column + "`"; }).join(", "));
@@ -107,6 +111,8 @@ module.exports = function() {
           }
         });
       });
+
+      return promise;
     }
   }
 };
