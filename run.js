@@ -10,7 +10,6 @@ RouterFactory = require("./lib/router.js")
 
 try {
   Router = require('node-simple-router');
-  Promise = require('es6-promises');
 } catch (e) {
   console.log('Missing dependencies! You can install them with npm install.');
   process.exit(-1);
@@ -22,13 +21,15 @@ var QL = QLFactory(Promise, DriveFactory, ConnectionFactory);
 
 Promise.all(QL.loadconfig())
 .then(function() {
-  Promise.all(QL.init()).then(function() {
+  Promise.all(QL.qualify()).then(function() {
 
   }, function(err) {
 
   });
-  
-  QL.getKeys()
+
+
+
+  QL.loadConfig()
   .then(function(){
     Promise.all(QL.cacheTables).then(function() {
       var router = RouterFactory(QL);

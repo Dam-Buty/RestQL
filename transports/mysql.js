@@ -1,4 +1,5 @@
-var mysql = require('mysql');
+mysql = require('mysql');
+Promise = require('es6-promises');
 
 module.exports = function() {
   return {
@@ -41,32 +42,41 @@ module.exports = function() {
 
     getTables: function(connection) {
       var self = this;
-      var keys = {};
+      var tables = {};
 
-      connection.query("SHOW TABLES;", function(err, rows, fields) {
-        if (err) {
-          callback("", err)
-        } else {
-          var field = fields[0].name;
-          var tablesNumber = rows.length;
+      var promise = new Promise(function(resolve, reject) {
+        connection.query("SHOW TABLES;", function(err, rows, fields) {
+          if (err) {
+            reject(err)
+          } else {
+            var field = fields[0].name;
+            var tablesNumber = rows.length;
 
-          rows.forEach(function(row) {
-            var table = row[field];
+            rows.forEach(function(row) {
+              var tableName = row[field];
 
-            connection.query("SHOW KEYS FROM " + table + " WHERE Key_name = 'PRIMARY'", function(err, rows) {
-              if (err) {
-                callback("", err);
-              } else {
-                var key = rows[0].Column_name;
-                keys[table] = key;
-                if (Object.keys(keys).length == tablesNumber) {
-                  callback(keys);
+              var table = {
+                name: tableName,
+                key: undefined
+              };
+
+              connection.query("SHOW KEYS FROM " + tableName + " WHERE Key_name = 'PRIMARY'", function(err, rows) {
+                if (err) {
+                  reject(err);
+                } else {
+                  table.key = rows[0].Column_name;
+                  tables[tableName] = table;
+                  if (Object.keys(keys).length == tablesNumber) {
+                    resolve(tables);
+                  }
                 }
-              }
+              });
             });
-          });
-        }
+          }
+        });
       });
+
+      return promise;
     },
 
     select: function(connection, params, callback) {
@@ -80,16 +90,22 @@ module.exports = function() {
 
       _query.push("FROM `" + params.table + "`");
 
+      if (params.id !== undefined) {
+        _query.push("WHERE `" + params.idColumn + "` = '" + params.id + "'");
+      }
+
       var query = _query.join(" ") + ";";
 
       console.log("Sending query : " + query);
 
-      connection.query(query, function(err, rows) {
-        if (err) {
-          callback("", err);
-        } else {
-          callback(rows);
-        }
+      var promise = new Promise(function(resolve, reject) {
+        connection.query(query, function(err, rows) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
       });
     }
   }

@@ -1,6 +1,6 @@
 {
   "name": "RestQL",
-  "description": "A simple RESTful API for MySQL databases",
+  "description": "A simple RESTful API for *SQL databases",
   "license" : "MIT",
   "version": "0.0.1",
   "repository": {

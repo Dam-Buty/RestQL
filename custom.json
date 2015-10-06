@@ -1,6 +1,9 @@
 {
   "ignoreDead": true,
-  "cached": ["categorie"],
+  "cache": {
+    "categorie": "complete",
+    "beneficiaire": 200
+  },
   "transports": {
     "mysql": [{
       "id": "ADMR",
@@ -23,7 +26,10 @@
         "pass": "secret",
         "base": "Progress",
         "broadcasts": ["categorie"],
-        "broadcastTimeout": 3600000
+        "broadcastTimeout": 3600000,
+        "translation": {
+          "categorie": "Progress_categorie"
+        }
       }
     }]
   }
