@@ -12,9 +12,6 @@ module.exports = function(Promise) {
         database : params.base
       });
 
-      console.log("PARAMS DE CONNECTION");
-      console.dir(params);
-
       var promise = new Promise(function(resolve, reject) {
         connection.connect(function(err) {
           if (err) {
@@ -45,8 +42,6 @@ module.exports = function(Promise) {
     getTables: function(connection) {
       var self = this;
       var tables = {};
-
-      console.dir(connection.query);
 
       var promise = new Promise(function(resolve, reject) {
         connection.query("SHOW TABLES;", function(err, rows, fields) {
@@ -84,21 +79,44 @@ module.exports = function(Promise) {
     },
 
     select: function(connection, params) {
-      var _query = ["SELECT"];
+      var _select = [];
+      var _from = [];
+      var _where = [];
+      var _orderBy = [];
+
 
       if (params.columns.length === 0) {
-        _query.push("*");
+        _select.push("*");
       } else {
-        _query.push(params.columns.map(function(column) { return "`" + column + "`"; }).join(", "));
+        _select.push(params.columns.map(function(column) { return "`" + column + "`"; }));
       }
 
-      _query.push("FROM `" + params.table + "`");
+      _from.push("`" + params.table + "`");
 
       if (params.id !== undefined) {
-        _query.push("WHERE `" + params.idColumn + "` = '" + params.id + "'");
+        _where.push("`" + params.idColumn + "` = '" + params.id + "'");
       }
 
-      var query = _query.join(" ") + ";";
+      Object.keys(params.where).forEach(function(column) {
+        _where.push("`" + column + "` = '" + params.where[column] + "'");
+      });
+
+      Object.keys(params.orderBy).forEach(function(column) {
+        _orderBy.push("`" + column + "` " + params.orderBy[column]);
+      });
+
+      var query = "SELECT " + _select.join(", ") +
+                  " FROM "  + _from.join(", ")   ;
+
+      if (_where.length > 0) {
+        query +=  " WHERE " + _where.join(", ")  ;
+      }
+
+      if (_orderBy.length > 0) {
+        query +=  " ORDER BY " + _orderBy.join(", ")  ;
+      }
+
+      query += ";";
 
       console.log("Sending query : " + query);
 

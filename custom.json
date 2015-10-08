@@ -2,12 +2,14 @@
   "ignoreDead": true,
   "cache": {
     "categorie": "complete",
+    "departments": "complete",
+    "salaries": 200,
     "beneficiaire": 200
   },
   "transports": {
     "mysql": [{
       "id": "ADMR",
-      "fast": 10,
+      "slow": 10,
       "persistent": true,
       "host": "localhost",
       "user": "test_ADMR",
@@ -15,7 +17,7 @@
       "base": "ADMR"
     }, {
       "id": "Progress",
-      "fast": 100,
+      "slow": 100,
       "external": true,
       "persistent": false,
       "host": "localhost",
@@ -27,6 +29,15 @@
       "translation": {
         "categorie": "Progress_categorie"
       }
+    }, {
+      "id": "employees",
+      "slow": 100,
+      "external": true,
+      "persistent": false,
+      "host": "localhost",
+      "user": "test_Progress",
+      "pass": "secret",
+      "base": "employees"
     }]
   }
 }
